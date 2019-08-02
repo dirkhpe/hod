@@ -15,15 +15,19 @@ import os
 import re
 import xml.etree.ElementTree as Et
 from Datastore import Datastore
-from Ftp_Handler import Ftp_Handler
 from lib import my_env
+from lib import sftp_handler
 
 
 class FileHandler:
     def __init__(self, config):
         self.config = config
         self.ds = Datastore(config)
-        self.ftp = Ftp_Handler(self.config)
+        host = self.config['FTPServer']['host']
+        user = self.config['FTPServer']['user']
+        pwd = self.config['FTPServer']['passwd']
+        self.sftp = sftp_handler.SftpHandler(host, user, pwd)
+        self.sftp.set_dir(self.config['FTPServer']['dir'])
 
     def bijsluiter(self, indic_id):
         """
@@ -35,7 +39,7 @@ class FileHandler:
         :return:
         """
         bs_file = self.create_bijsluiter_file(indic_id)
-        self.ftp.load_file(bs_file)
+        self.sftp.load_file(bs_file)
         # Calculate URL
         url = self.calculate_url(os.path.basename(bs_file))
         # Add URL to indicators table
@@ -47,7 +51,6 @@ class FileHandler:
         This method will create a bijsluiter file for the indicator.
 
         :param indic_id:
-
         :return: Filename of the bijsluiter file. Filename is in standard format for resources: resource_indicid.html
         Resource is 'bijsluiter', indicid is indicator ID, 3 characters or longer.
         """
@@ -90,7 +93,6 @@ class FileHandler:
         This method will calculate URL for a file.
 
         :param file: Filename (not including path).
-
         :return: URL for the file, including FTP directory.
         """
         # Calculate URL
@@ -104,6 +106,7 @@ class FileHandler:
         """
         Remove the url attribute for this resource.
         If file does not contain 'empty', then calculate URL the file and set result in indicators table.
+
         :param file: Filename of the resource (not including path!)
         :return:
         """
@@ -124,9 +127,7 @@ class FileHandler:
         If file does not contain 'empty', then calculate Size of the file and set result in indicators table.
 
         :param handledir: Current directory of the file.
-
         :param file:
-
         :return:
         """
         logging.debug('Add/Remove filesize %s to indicators table.', file)
@@ -149,6 +150,7 @@ class FileHandler:
         populate all fields that come from the 'Dataroom'.
         Call function to populate the dataset if this is a new dataset or an update of the dataset.
         Pre-requisite for this call is that dataset exists already.
+
         :param metafile: filename of the file with metadata.
         :param indic_id: Indicator ID
         :return:
@@ -232,6 +234,7 @@ class FileHandler:
         Else (the dataset does not yet exist or cijfersxml does exist so a dataset package must be created) the
         load_metadata method is called to add information to the database. This info will be used by dcat_ap_create
         script.
+
         :return:
         """
         # Get ckan connection first
@@ -250,7 +253,7 @@ class FileHandler:
             my_env.move_file(file, scandir, handledir)  # Move file is done in separate function.
             if 'empty' in file:
                 # remove_file handles paths, empty in filename, ...
-                self.ftp.remove_file(file=file)
+                self.sftp.remove_file(file=file)
                 # Strip empty from filename
                 filename = re.sub('empty\.', '', file)
                 indic_id = my_env.indic_from_file(filename)
@@ -258,7 +261,7 @@ class FileHandler:
                 attribute = "id_" + res_type
                 self.ds.remove_indicator_attribute(indic_id, attribute)
             else:
-                self.ftp.load_file(file=os.path.join(handledir, file))
+                self.sftp.load_file(file=os.path.join(handledir, file))
             self.size_of_file(handledir, file)
             self.url_in_db(file)
         # Now handle meta-data
