@@ -1,5 +1,4 @@
-#!/opt/csw/bin/python3
-
+#!/home/mowdr/env/dataroom/bin/python
 """
 This script will create a dcat_ap catalog file for the MOW Dataroom Open Data.
 """

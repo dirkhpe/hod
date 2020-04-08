@@ -32,7 +32,6 @@ class FileHandler:
         generator will pick up the bijsluiter.
 
         :param indic_id:
-
         :return:
         """
         bs_file = self.create_bijsluiter_file(indic_id)
@@ -48,7 +47,6 @@ class FileHandler:
         This method will create a bijsluiter file for the indicator.
 
         :param indic_id:
-
         :return: Filename of the bijsluiter file. Filename is in standard format for resources: resource_indicid.html
         Resource is 'bijsluiter', indicid is indicator ID, 3 characters or longer.
         """
@@ -125,9 +123,7 @@ class FileHandler:
         If file does not contain 'empty', then calculate Size of the file and set result in indicators table.
 
         :param handledir: Current directory of the file.
-
         :param file:
-
         :return:
         """
         logging.debug('Add/Remove filesize %s to indicators table.', file)
@@ -150,6 +146,7 @@ class FileHandler:
         populate all fields that come from the 'Dataroom'.
         Call function to populate the dataset if this is a new dataset or an update of the dataset.
         Pre-requisite for this call is that dataset exists already.
+
         :param metafile: filename of the file with metadata.
         :param indic_id: Indicator ID
         :return:
@@ -233,6 +230,7 @@ class FileHandler:
         Else (the dataset does not yet exist or cijfersxml does exist so a dataset package must be created) the
         load_metadata method is called to add information to the database. This info will be used by dcat_ap_create
         script.
+
         :return:
         """
         # Get ckan connection first
@@ -278,7 +276,7 @@ class FileHandler:
             # Remove bijsluiter from indicators table. It will be added if required.
             # self.ds.remove_indicator_attribute(indic_id, "bijsluiter")
             # If cijfersxml does not exist or metadata file has empty string, then set package to private.
-            if ('empty' in file) or (self.ds.get_indicator_value(indic_id, 'cijfersxml') == 'niet gevonden'):
+            if ('empty' in file) or (self.ds.get_indicator_value(indic_id, 'cijfersxml') == 'nietGevonden'):
                 # Required and sufficient reason to set package to private.
                 # For Harvester I can forget all about the package.
                 self.ds.remove_indicator(indic_id)

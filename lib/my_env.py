@@ -99,9 +99,7 @@ def get_inifile(projectname, scriptname):
     Read Project configuration ini file in subdirectory properties.
 
     :param projectname: Name of the project.
-
     :param scriptname: Name of the calling application. This is used to calculate the config file path.
-
     :return: Object reference to the inifile.
     """
     # Use Project Name as ini file.
@@ -125,6 +123,7 @@ def move_file(file2move, sourcedir, targetdir):
     This function will move a file from source dir to target dir.
     It will check if the file exists on target dir. If so, remove file from target dir.
     Then move file from source dir. Assumption: file must exist on sourcedir.
+
     :param file2move: Filename of the file that needs to be moved
     :param sourcedir: Source Directory where the file is now.
     :param targetdir: Target Directory where the file needs to go to.
@@ -165,7 +164,6 @@ def indic_from_file(filename):
     The filename format is resource_indicid.ext or resource_indicid.empty.ext
 
     :param filename:
-
     :return: indic_id (numeric)
     """
     # log_msg = "Getting indicator ID from %s"
@@ -185,7 +183,6 @@ def type_from_file(filename):
     The resource type is before first _ . Resource types are returned in lowercase.
 
     :param filename:
-
     :return: resource type
     """
     file = os.path.basename(filename)
@@ -204,9 +201,7 @@ def attr_from_file(attribute, file):
     This method will provide attribute name from file name. Underscore is added between attribute and file.
 
     :param attribute: name to create attribute with, such as url or id. Don't add underscore.
-
     :param file: Filename for which type is searched.
-
     :return: attribute and filename, example: url_cijfersxml or id_commentaar
     """
     # logging.debug("Attribute: %s, File: %s", attribute, file)
@@ -218,7 +213,7 @@ def attr_from_file(attribute, file):
 
 def get_resource_types():
     """
-    This method will return all known resource types in an array.
+    This method will return all known resource types in a dictionary.
     To do: convert all resource type handling in a class, create an iterator here.
     :return: dictionary with known resource types and resource label.
     """

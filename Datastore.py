@@ -93,9 +93,7 @@ class Datastore:
         This method will remove the record for the indicator / attribute combination.
 
         :param indicator_id: ID of the indicator to be removed.
-
         :param attribute: Attribute related to the indicator.
-
         :return:
         """
         # TODO - Count number of records deleted.
@@ -110,7 +108,6 @@ class Datastore:
         This method will collect all attributes with action 'Extra'. This information needs to go on the bijsluiter.
 
         :param indic_id:
-
         :return: dictionary with key attribute name and values.
         """
         query = """
@@ -130,12 +127,10 @@ class Datastore:
     def get_indicator_value(self, indicator_id, attribute):
         """
         This method will get all values for attribute name and indicator ID in a list. Check with method
-        'get_indicator_val' which will return result string, or 'niet gevonden' in case that result is not found.
+        'get_indicator_val' which will return result string, or 'nietGevonden' in case that result is not found.
 
         :param indicator_id:
-
         :param attribute: Name for which value is required.
-
         :return: Array of result lists. Each result list has one element, the required value. Empty list is returned if
         no values are found.
         """
@@ -152,16 +147,14 @@ class Datastore:
         which will return result array.
 
         :param indicator_id:
-
         :param attribute: Name for which value is required.
-
-        :return: result string or 'niet gevonden'.
+        :return: result string or 'nietGevonden'.
         """
         values_lst = self.get_indicator_value(indicator_id, attribute)
         if values_lst:
             res_str = values_lst[0][0]
         else:
-            res_str = 'niet gevonden'
+            res_str = 'nietGevonden'
         return res_str
 
     def get_indicator_attrib_values(self, indicator_id, attribs):
@@ -170,9 +163,7 @@ class Datastore:
         indicator table for each of the attributes.
 
         :param indicator_id:
-
         :param attribs:
-
         :return: Array of (attribute, value) lists.
         """
         logging.debug("Get attribute/value pairs for indicator %s", indicator_id)
@@ -199,6 +190,7 @@ class Datastore:
     def get_indicator_cognos_urls(self):
         """
         This method will get all indicator IDs for indicators that have a Cognos URL available (url_cognos exist).
+
         :return: List of indicator IDs with Cognos URL.
         """
         query = "SELECT distinct indicator_id FROM indicators WHERE attribute = 'url_cognos'"
@@ -216,6 +208,7 @@ class Datastore:
         (This used to be a method of CKANConnector.py, but moved to Datastore.py since it will be called from
         Evaluate_Cognos.py and this script wants to avoid loading of the ckanapi.)
         Compare with check_resource_id, that will verify if a resource is published on Open Dataset.
+
         :param indic_id: Indicator ID.
         :param res_type: Resource Type for which URL is searched.
         :return: True if the URL for the resource on Repository server is available in indicator table. False otherwise.
@@ -238,6 +231,7 @@ class Datastore:
         This procedure will check if the resource is published on Open Dataset. A resource is published on Open Dataset
         if the resource id (id_cognos, id_cijfersxml, ...) exists in the indicators table.
         Compare with check_resource, that will verify if the resource exists.
+
         :param indic_id: Indicator ID.
         :param res_type: Resource Type for which ID is searched.
         :return: True if the ID for the resource on Repository server is available in indicator table. False otherwise.
@@ -275,11 +269,8 @@ class Datastore:
         Input parameters can be string or arrays. The query will check for all values in the array.
 
         :param source: Source for the attribute / Open data pairs
-
         :param target: Target for the attribute / Open data pairs
-
         :param action: The action field.
-
         :return: Array of (unique attribute name, Open Data name) lists.
         """
         source = my_env.get_array(source)
@@ -310,7 +301,6 @@ class Datastore:
         This method will insert a record in the attribute_action table. Date / Time of insert is calculated.
 
         :param params: Dictionary with keys attribute, od_field, action, source, target
-
         :return:
         """
         logging.debug("Remove attribute, then add to attribute_action table attribute: {a}, od_field: {o}"
@@ -327,6 +317,7 @@ class Datastore:
     def update_attribute(self, attribute, od_field):
         """
         This method will update the attribute in attribute_action with the od_field specified.
+
         :param attribute:
         :param od_field:
         :return:
@@ -340,6 +331,7 @@ class Datastore:
     def remove_attribute(self, attribute):
         """
         This method will remove the attribute from attribute_action.
+
         :param attribute:
         :return:
         """
@@ -354,7 +346,6 @@ class Datastore:
         This method will remove all information from an indicator in the indicator table.
 
         :param indic_id: Indicator ID that needs to be removed
-
         :return:
         """
         query = "DELETE FROM indicators WHERE indicator_id = ?"
@@ -367,6 +358,7 @@ class Datastore:
         Purpose of this method is to check database consistency. Check that each attribute name in indicators
         table need to show up in attribute_action table.
         Then check if attributes in attribute_action table occur more than once.
+
         :return:
         """
         query = "SELECT distinct attribute FROM indicators"
@@ -399,4 +391,3 @@ class Datastore:
             print(msg)
             logging.error(msg)
         return
-
